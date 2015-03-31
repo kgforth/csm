@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>CSM</title>
+<script type="text/javascript" src="src/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="src/wysiwyg.js"></script>
+<script type="text/javascript" src="src/wysiwyg-editor.js"></script>
+<!-- github.io delivers wrong content-type - but you may want to include FontAwesome in 'wysiwyg-editor.css' -->
+<link rel="stylesheet" type="text/css" href="src/font-awesome.min.css">
+<link rel="stylesheet" type="text/css" href="src/wysiwyg-editor.css" />
+
+<script type="text/javascript">
+
+     var backup = ' ';
+     var filein = './csm/empty.csm';
+
+$(document).ready(function(){
+
+
+ $('#ex-1').click(function(){
+
+      $.get(filein, function (resp) {$('#editor1').wysiwyg('shell').setHTML(resp)});
+
+    }); 
+
+
+
+    // Full featured editor
+    $('#editor1').each( function(index, element)
+    {
+        $(element).wysiwyg({
+            classes: 'some-more-classes',
+            // 'selection'|'top'|'top-selection'|'bottom'|'bottom-selection'
+            toolbar: index == 0 ? 'selection' : (index == 1 ? 'bottom' : 'selection'),
+            buttons: {
+
+                bold: {
+                    title: 'Bold (Ctrl+B)',
+                    image: '\uf032', // <img src="path/to/image.png" width="16" height="16" alt="" />
+                    hotkey: 'b'
+                },
+
+                underline: {
+                    title: 'Underline (Ctrl+U)',
+                    image: '\uf0cd', // <img src="path/to/image.png" width="16" height="16" alt="" />
+                    hotkey: 'u'
+                },
+                forecolor: {
+                    title: 'Text color',
+                    image: '\uf1fc' // <img src="path/to/image.png" width="16" height="16" alt="" />
+                },
+
+                subscript: index == 1 ? false : {
+                    title: 'Comment',
+                    image: '\uf12c', // <img src="path/to/image.png" width="16" height="16" alt="" />
+                    //showstatic: true,    // wanted on the toolbar
+                    showselection: true    // wanted on selection
+                },
+
+
+                removeformat: {
+                    title: 'Remove format',
+                    image: '\uf12d' // <img src="path/to/image.png" width="16" height="16" alt="" />
+                }
+            },
+
+        })
+        .change(function(){
+            if( typeof console != 'undefined' )
+                console.log( 'change' );
+        })
+        .focus(function(){
+            if( typeof console != 'undefined' )
+                console.log( 'focus' );
+        })
+        .blur(function(){
+            if( typeof console != 'undefined' )
+                console.log( 'blur' );
+        });
+    });
+
+
+
+ $('#open1').click(function(){
+
+     var filein = "./csm/" + $("#input1").html();
+
+      $.get(filein, function (resp) {$('#editor1').wysiwyg('shell').setHTML(resp)});
+
+    });
+
+ $('#save1').click(function(){
+
+       filein = "./csm/" + $("#input1").html();
+
+        $.post('save.html', filein + ':' + $('#editor1').wysiwyg('shell').getHTML());
+    });
+
+
+ $('#code1').click(function(){
+
+
+          backup = $('#editor1').wysiwyg('shell').getHTML();
+
+          $.post('code.html', $('#editor1').wysiwyg('shell').getHTML(), function(data){
+
+          $('#editor1').wysiwyg('shell').setHTML(data);
+      });
+
+
+ $('#back1').click(function(){
+
+          $('#editor1').wysiwyg('shell').setHTML(backup);
+
+      });
+
+
+    });
+
+
+
+ $('#editor1-BEGIN-AGAIN').click(function(){
+        $('#editor1').wysiwyg('shell').insertHTML('&#x24B7;&#x24B6;');
+        return false;
+    });
+
+
+ $('#editor1-BEGIN-UNTIL').click(function(){
+        $('#editor1').wysiwyg('shell').insertHTML('&#x24B7;&#x24CA;');
+        return false;
+    });
+
+ $('#editor1-BEGIN-WHILE-REPEAT').click(function(){
+        $('#editor1').wysiwyg('shell').insertHTML('&#x24B7;&#x24CC;&#x24C7;');
+        return false;
+    });
+
+
+ $('#editor1-IF-ELSE-THEN').click(function(){
+        $('#editor1').wysiwyg('shell').insertHTML('&#x24BE;&#x24BA;&#x24C9;');
+        return false;
+    });
+
+
+ $('#editor1-DO-LOOP').click(function(){
+        $('#editor1').wysiwyg('shell').insertHTML('&#x24B9;&#x24C1;');
+        return false;
+    });
+
+ $('#editor1-PLOOP').click(function(){
+        $('#editor1').wysiwyg('shell').insertHTML('&#x24C5;');
+        return false;
+    });
+
+ $('#editor1-0DO').click(function(){
+        $('#editor1').wysiwyg('shell').insertHTML('&#x24EA;');
+        return false;
+    });
+
+
+ $('#editor1-LEAVE').click(function(){
+        $('#editor1').wysiwyg('shell').insertHTML('&#x24E5;');
+        return false;
+    });
+
+
+ $('#editor1-UNLOOP').click(function(){
+        $('#editor1').wysiwyg('shell').insertHTML('&#x24E4;');
+        return false;
+    });
+
+
+ $('#editor1-RECURCE').click(function(){
+        $('#editor1').wysiwyg('shell').insertHTML('&#x24E1;');
+        return false;
+    });
+
+//    var wysiwygeditor = wysiwyg( option );
+    //wysiwygeditor.setHTML( '<html>' );
+});
+
+
+
+
+
+
+</script>
+<style>
+body {
+    font-family: Arial,Verdana;
+}
+p {
+    margin: 0;
+    padding: 0;
+}
+.button {
+    -moz-user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+/* CSS for the font-name + font-size plugin */
+.wysiwyg-toolbar-list {
+    max-height: 16em;
+    overflow: auto;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+.wysiwyg-toolbar-list a,
+.wysiwyg-toolbar-list a:link,
+.wysiwyg-toolbar-list a:visited {
+    display: block;
+    color: black;
+    padding: 5px 10px;
+    text-decoration: none;
+    cursor: pointer;
+}
+.wysiwyg-toolbar-list a:hover {
+    color: HighlightText;
+    background-color: Highlight;
+}
+
+</style>
+</head>
+<body>
+
+
+<div style="width:860px; margin: 5px auto; font-family: Arial,Verdana; font-size: 1.1em;"> 
+<div id="input1" style="width:130px; display:inline-block; margin: 10px auto; font-family: Arial,Verdana; font-size: 1.1em;" contenteditable>empty.csm</div> 
+<div style="width:700px; display:inline-block; margin: 5px auto; font-family: Arial,Verdana; font-size: 1.1em;">
+&nbsp; &nbsp;  <a contenteditable="false" id="open1" class="button" href="#" unselectable="on">open</a>
+&nbsp; &nbsp;  <a contenteditable="false" id="save1" class="button" href="#" unselectable="on">save</a>
+&nbsp; &nbsp;  <a contenteditable="false" id="code1" class="button" href="#" unselectable="on">code</a>
+&nbsp; &nbsp;  <a contenteditable="false" id="back1" class="button" href="#" unselectable="on">back</a>
+&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; 
+цв<font color="#0000ff">е</font>тн<font color="#ff0000">ы</font><font color="#0000ff">е</font>&nbsp;&nbsp;&nbsp;&nbsp;ст<font color="#0000ff">е</font>к<font color="#00ffff">о</font>в<font color="#ff0000">ы</font><font color="#0000ff">е</font>&nbsp;&nbsp;&nbsp;&nbsp;м<font color="#00ff00">а</font>н<font color="#ff00ff">и</font>п<font color="#0000ff">у</font>л<font color="#00ff00">я</font>т<font color="#00ffff">о</font>р<font color="#ff0000">ы</font>
+
+</div>
+</div>
+
+<div style="width:860px; margin: 5px auto; font-family: Arial,Verdana; font-size: 0.718em;">
+         <a id="editor1-BEGIN-AGAIN" class="button" href="#" unselectable="on">&#x24B7;&#x24B6;=BEGIN-AGAIN</a>
+ &nbsp;  <a id="editor1-BEGIN-UNTIL" class="button" href="#" unselectable="on">&#x24B7;&#x24CA;=BEGIN-UNTIL</a>
+ &nbsp;  <a id="editor1-BEGIN-WHILE-REPEAT" class="button" href="#" unselectable="on">&#x24B7;&#x24CC;&#x24C7;=BEGIN-WHILE-REPEAT</a>
+ &nbsp;  <a id="editor1-IF-ELSE-THEN" class="button" href="#" unselectable="on">&#x24BE;&#x24BA;&#x24C9;=IF-ELSE-THEN</a>
+ &nbsp;  <a id="editor1-DO-LOOP" class="button" href="#" unselectable="on">&#x24B9;&#x24C1;=DO-LOOP</a>
+ &nbsp;  <a id="editor1-PLOOP" class="button" href="#" unselectable="on">&#x24C5;=+LOOP</a>
+ &nbsp;  <a id="editor1-0DO" class="button" href="#" unselectable="on">&#x24EA;=?DO</a>
+ &nbsp;  <a id="editor1-LEAVE" class="button" href="#" unselectable="on">&#x24E5;=LEAVE</a>
+ &nbsp;  <a id="editor1-UNLOOP" class="button" href="#" unselectable="on">&#x24E4;=UNLOOP</a>
+</div>
+
+
+<div style="width:860px; margin: 10px auto; font-family: Arial,Verdana; font-size: 2.2em;">
+  <textarea id="editor1" name="editor" placeholder="Type your text here..."></textarea>
+</div>
+
+<br>
+
+<div style="width:860px; margin: 10px auto; font-family: Arial,Verdana; font-size: 0.9em;">
+abc 123 &nbsp;обычные форт-слова и числа&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#0000ff">a..z A..Z</font> однобуквенные переменные&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#ff00ff">a..z A..Z</font> однобуквенные вектора
+</div>
+
+<div style="width:860px; margin: 10px auto; font-family: Arial,Verdana; font-size: 0.9em;">
+<font color="#0000ff">1..9</font>&nbsp;переменные&nbsp;стекового манипулятора&nbsp; &nbsp; &nbsp;&nbsp;<u><font color="#0000ff">1</font></u>..<u><font color="#0000ff">9</font></u>&nbsp;загрузить в переменные &nbsp; &nbsp; &nbsp;<b><u><font color="#0000ff">1</font></u>..<u><font color="#0000ff">9</font></u></b>&nbsp;скопировать в&nbsp;переменные
+</div>
+
+<div style="width:860px; margin: 10px auto; font-family: Arial,Verdana; font-size: 0.9em;">
+<font color="#0000ff"><u>a</u></font>..<font color="#0000ff"><u>z</u>&nbsp;&nbsp; <u>A</u></font>..<font color="#0000ff"><u>Z</u></font>&nbsp;&nbsp;загрузить в&nbsp;однобуквенную переменную &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#0000ff"><b><u>a</u></b></font>..<font color="#0000ff"><b><u>z</u>&nbsp;&nbsp; <u>A</u></b></font>..<font color="#0000ff"><b><u>Z</u></b></font>&nbsp;&nbsp;скопировать в&nbsp;однобуквенную переменную
+</div>
+
+
+<div style="width:860px; margin: 10px auto; font-family: Arial,Verdana; font-size: 0.9em;">
+<b><font color="#ff00ff">a</font></b>ABS<font color="#ff00ff">;</font> определить и установить вектор <font color="#ff00ff">a</font>&nbsp; &nbsp; &nbsp; ( xt -- ) <u><font color="#ff00ff">a</font></u> установить вектор <font color="#ff00ff">a </font>значением с вершины стека в форт-слове
+</div>
+
+<br>
+
+
+<div style="width:860px; margin: 10px auto; font-family: Arial,Verdana; font-size: 0.9em;">
+обычные цветные условия:&nbsp;<font color="#ff0000">Ⓘ</font><sub>&lt; IF</sub>&nbsp;<font color="#ff0000">Ⓤ</font><sub>&lt; UNTIL&nbsp;</sub><font color="#ff0000">Ⓦ</font><sub>&lt; WHILE</sub>&nbsp; &nbsp; &nbsp;&nbsp;<font color="#fff000">Ⓘ</font><sub>= IF</sub><font color="#fff000">Ⓤ</font><sub>=</sub><sub>&nbsp;UNTIL</sub>&nbsp;<font color="#fff000">Ⓦ</font>&nbsp;<sub>= WHILE</sub>&nbsp; &nbsp; &nbsp;&nbsp;<font color="#00ff00">Ⓘ</font><sub>&gt; IF&nbsp;</sub><font color="#00ff00">Ⓤ</font><sub>&gt;</sub><sub>&nbsp;UNTIL</sub><font color="#00ff00">Ⓦ</font><sub>&gt; WHILE</sub><br>
+</div>
+
+<div style="width:860px; margin: 10px auto; font-family: Arial,Verdana; font-size: 0.9em;">
+инверсные:&nbsp;<u><font color="#ff0000">Ⓘ</font></u><sub>&lt; NOT IF</sub><u><font color="#ff0000">Ⓤ</font></u><sub>&lt; NOT UNTIL</sub><u><font color="#ff0000">Ⓦ</font></u><sub>&lt; NOT WHILE</sub>&nbsp;&nbsp;<u><font color="#fff000">Ⓘ</font></u><sub>= NOT IF</sub><u><font color="#fff000">Ⓤ</font></u><sub>=&nbsp;NOT UNTIL</sub><u><font color="#fff000">Ⓦ</font></u><sub>= NOT WHILE</sub>&nbsp; &nbsp;<u><font color="#00ff00">Ⓘ</font></u><sub>&gt; NOT IF</sub><u><font color="#00ff00">Ⓤ</font></u><sub>&gt;&nbsp;NOT UNTIL</sub><u><font color="#00ff00">Ⓦ</font></u><sub>&gt; NOT WHILE</sub>
+</div>
+
+<div style="width:860px; margin: 10px auto; font-family: Arial,Verdana; font-size: 0.9em;">
+условия с нулем:&nbsp;<font color="#ff0000"><b>Ⓘ</b></font><sub>0 &lt; IF</sub><font color="#ff0000"><b>Ⓤ</b></font><sub>0 &lt; UNTIL</sub><font color="#ff0000"><b>Ⓦ</b></font><sub>0 &lt; WHILE</sub>&nbsp;&nbsp;<font color="#fff000"><b>Ⓘ</b></font><sub>0 = IF</sub><font color="#fff000"><b>Ⓤ</b></font><sub>0 = UNTIL</sub><font color="#fff000"><b>Ⓦ</b></font><sub>0 = WHILE</sub>&nbsp; &nbsp;<font color="#00ff00"><b>Ⓘ</b></font><sub>0 &gt; IF</sub><font color="#00ff00"><b>Ⓤ</b></font><sub>0 &gt; UNTIL</sub><font color="#00ff00"><b>Ⓦ</b></font><sub>0 &gt; WHILE</sub>
+</div>
+
+<div style="width:860px; margin: 10px auto; font-family: Arial,Verdana; font-size: 0.9em;">
+<u><font color="#ff0000"><b>Ⓘ</b></font></u><sub>0 &lt; NOT IF</sub><u><font color="#ff0000"><b>Ⓤ</b></font></u><sub>0 &lt; NOT UNTIL</sub><u><font color="#ff0000"><b>Ⓦ</b></font></u><sub>0 &lt; NOT WHILE</sub>&nbsp;&nbsp;<u><font color="#fff000"><b>Ⓘ</b></font></u><sub>0 = NOT IF</sub><u><font color="#fff000"><b>Ⓤ</b></font></u><sub>0 = NOT UNTIL</sub><u><font color="#fff000"><b>Ⓦ</b></font></u><sub>0 = NOT WHILE</sub>&nbsp; &nbsp;<u><font color="#00ff00"><b>Ⓘ</b></font></u><sub>0 &gt; NOT IF</sub><u><font color="#00ff00"><b>Ⓤ</b></font></u><sub>0 &gt; NOT UNTIL</sub><u><font color="#00ff00"><b>Ⓦ</b></font></u><sub>0 &gt; NOT WHILE</sub>
+</div>
+
+<div style="width:860px; margin: 10px auto; font-family: Arial,Verdana; font-size: 0.9em;">
+синие операторы: <font color="#0000ff">;</font><sub>EXIT</sub>&nbsp;<font color="#0000ff">&amp;</font><sub>AND</sub>&nbsp;<font color="#0000ff">~</font><sub>INVERT</sub>&nbsp;<font color="#0000ff">!</font><sub>!</sub> <font color="#0000ff">@</font><sub>@</sub> <font color="#0000ff">#</font><sub>&gt;NUMBER</sub> <font color="#0000ff">$</font><sub>SFIND</sub> <font color="#0000ff">%</font><sub>MOD</sub> <font color="#0000ff">^</font><sub>XOR</sub> <font color="#0000ff">*</font><sub>*</sub> <font color="#0000ff">(</font><sub>(</sub> <font color="#0000ff">)</font><sub>)</sub> <font color="#0000ff">-</font><sub>-</sub> <font color="#0000ff">,</font><sub>,</sub> <font color="#0000ff">+</font><sub>+</sub> <font color="#0000ff">=</font><sub>=</sub> <font color="#0000ff">{</font><sub>{</sub> <font color="#0000ff">}</font><sub>}</sub> <font color="#0000ff">:</font><sub>DUP</sub> <font color="#0000ff">\</font><sub>CR</sub> <font color="#0000ff">|</font><sub>OR</sub> <font color="#0000ff">/</font><sub>/</sub> <font color="#0000ff">&lt;</font><sub>&lt;</sub> <font color="#0000ff">&gt;</font><sub>&gt;</sub> <font color="#0000ff">.</font><sub>.</sub> <font color="#0000ff">?</font><sub>?</sub> <font color="#0000ff">_</font><sub>_</sub>
+</div>
+
+
+<br>
+
+<div style="width:860px; margin: 10px auto; font-family: Arial,Verdana; font-size: 0.9em;">
+подстрочный<sub><font color="#00ffff">текст</font></sub>это форт-комментарий, <u>форт</u>-слова и цв<font color="#0000ff">е</font>тн<font color="#ff00ff">ы</font>е с<font color="#00ff00">и</font>мв<font color="#ff0000">о</font>л<font color="#fff000">ы</font> могут следовать без разделительного пробела
+</div>
+
+
+
+</body>
+</html>
