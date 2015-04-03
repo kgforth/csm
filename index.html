@@ -98,15 +98,29 @@ $(document).ready(function(){
     });
 
 
- $('#code1').click(function(){
+ $('#forth1').click(function(){
 
 
           backup = $('#editor1').wysiwyg('shell').getHTML();
 
-          $.post('code.html', $('#editor1').wysiwyg('shell').getHTML(), function(data){
+          $.post('forth.html', $('#editor1').wysiwyg('shell').getHTML(), function(data){
 
           $('#editor1').wysiwyg('shell').setHTML(data);
       });
+
+
+ $('#bbcode1').click(function(){
+
+
+          backup = $('#editor1').wysiwyg('shell').getHTML();
+
+          $.post('bbcode.html', $('#editor1').wysiwyg('shell').getHTML(), function(data){
+
+          $('#editor1').wysiwyg('shell').setHTML(data);
+
+      });
+
+   });
 
 
  $('#back1').click(function(){
@@ -114,7 +128,6 @@ $(document).ready(function(){
           $('#editor1').wysiwyg('shell').setHTML(backup);
 
       });
-
 
     });
 
@@ -231,11 +244,12 @@ p {
 <div style="width:860px; margin: 5px auto; font-family: Arial,Verdana; font-size: 1.1em;"> 
 <div id="input1" style="width:130px; display:inline-block; margin: 10px auto; font-family: Arial,Verdana; font-size: 1.1em;" contenteditable>empty.csm</div> 
 <div style="width:700px; display:inline-block; margin: 5px auto; font-family: Arial,Verdana; font-size: 1.1em;">
-&nbsp; &nbsp;  <a contenteditable="false" id="open1" class="button" href="#" unselectable="on">open</a>
-&nbsp; &nbsp;  <a contenteditable="false" id="save1" class="button" href="#" unselectable="on">save</a>
-&nbsp; &nbsp;  <a contenteditable="false" id="code1" class="button" href="#" unselectable="on">code</a>
-&nbsp; &nbsp;  <a contenteditable="false" id="back1" class="button" href="#" unselectable="on">back</a>
-&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; 
+&nbsp; <a contenteditable="false" id="open1" class="button" href="#" unselectable="on">open</a>
+&nbsp; <a contenteditable="false" id="save1" class="button" href="#" unselectable="on">save</a>
+&nbsp; <a contenteditable="false" id="forth1" class="button" href="#" unselectable="on">forth</a>
+&nbsp; <a contenteditable="false" id="bbcode1" class="button" href="#" unselectable="on">bbcode</a>
+&nbsp; <a contenteditable="false" id="back1" class="button" href="#" unselectable="on">back</a>
+&nbsp;&nbsp; &nbsp;&nbsp; 
 цв<font color="#0000ff">е</font>тн<font color="#ff0000">ы</font><font color="#0000ff">е</font>&nbsp;&nbsp;&nbsp;&nbsp;ст<font color="#0000ff">е</font>к<font color="#00ffff">о</font>в<font color="#ff0000">ы</font><font color="#0000ff">е</font>&nbsp;&nbsp;&nbsp;&nbsp;м<font color="#00ff00">а</font>н<font color="#ff00ff">и</font>п<font color="#0000ff">у</font>л<font color="#00ff00">я</font>т<font color="#00ffff">о</font>р<font color="#ff0000">ы</font>
 
 </div>
