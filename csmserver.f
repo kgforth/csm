@@ -1,4 +1,6 @@
-VECT MAKECODE
+VECT FORTHCODE
+VECT BBCODE
+
 
 REQUIRE {            locals.f
 REQUIRE CreateSocket sockets.f
@@ -205,7 +207,10 @@ SWAP WARNING !
 ;
 
 
-: MAKE-CODE   ( a u -- ) MAKECODE  WRITE  ;
+: MAKE-FORTH   ( a u -- ) FORTHCODE   WRITE  ;
+
+: MAKE-BBCODE  ( a u -- ) BBCODE      WRITE  ;
+
 
 
 : ANSWER-REQUEST
@@ -228,10 +233,15 @@ SWAP WARNING !
 
   IF   posted @ STR@  MAKE-FILE  THEN
 
+  file STR@ S" ./forth.html" COMPARE 0=  active @  AND  
 
-  file STR@ S" ./code.html" COMPARE 0=  active @  AND  
+  IF   posted @ STR@  MAKE-FORTH  THEN
 
-  IF   posted @ STR@  MAKE-CODE  THEN
+  file STR@ S" ./bbcode.html" COMPARE 0=  active @  AND  
+
+  IF   posted @ STR@  MAKE-BBCODE  THEN
+
+
 
 file STRFREE
 
