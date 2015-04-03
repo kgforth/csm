@@ -410,11 +410,7 @@ S" </font>"  ??  OF S" [/color]"  s+  ENDOF
 OVER /cur ! + /lim !  "" /s !
 
 
-S" [size=35]" s+
-
   BEGIN  /cur @ /lim @ < WHILE to-bbcode  /cur 1+!  REPEAT
-
-S" [/size]" s+
 
 
 CR  ." {" s. ." }"
