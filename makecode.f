@@ -37,10 +37,44 @@ CREATE (u) 0xE2 C, 0x93 C, 0xA4 C,
 : "Fuchsia S' <font color="#ff00ff"' ;
 
 
+: Red"     S' color="#ff0000">' ;
+: Yellow"  S' color="#fff000">' ;   ( orig #ffff00 )
+: Green"   S' color="#00ff00">' ;
+: Aqua"    S' color="#00ffff">' ;
+: Blue"    S' color="#0000ff">' ;
+: Fuchsia" S' color="#ff00ff">' ;
+
+
+: Red-tag?  ( --  f ) 
+         S' <font style=' /cur @ OVER COMPARE IF -1 EXIT THEN 
+         /cur @ 256  S' color="#ff0000">' SEARCH IF DROP 15 + /cur ! 0  ELSE 2DROP -1 THEN  ; 
+
+: Yellow-tag?  ( --  f ) 
+         S' <font style=' /cur @ OVER COMPARE IF -1 EXIT THEN 
+         /cur @ 256  S' color="#fff000">' SEARCH IF DROP 15 + /cur ! 0  ELSE 2DROP -1 THEN  ; 
+
+: Green-tag?  ( --  f ) 
+         S' <font style=' /cur @ OVER COMPARE IF -1 EXIT THEN 
+         /cur @ 256  S' color="#00ff00">' SEARCH IF DROP 15 + /cur ! 0  ELSE 2DROP -1 THEN  ; 
+
+: Aqua-tag?  ( --  f ) 
+         S' <font style=' /cur @ OVER COMPARE IF -1 EXIT THEN 
+         /cur @ 256  S' color="#00ffff">' SEARCH IF DROP 15 + /cur ! 0  ELSE 2DROP -1 THEN  ; 
+
+
+: Blue-tag?  ( --  f ) 
+         S' <font style=' /cur @ OVER COMPARE IF -1 EXIT THEN 
+         /cur @ 256  S' color="#0000ff">' SEARCH IF DROP 15 + /cur ! 0  ELSE 2DROP -1 THEN  ; 
+
+: Fuchsia-tag?  ( --  f ) 
+         S' <font style=' /cur @ OVER COMPARE IF -1 EXIT THEN 
+         /cur @ 256  S' color="#ff00ff">' SEARCH IF DROP 15 + /cur ! 0  ELSE 2DROP -1 THEN  ; 
+
+
+
 : "span    S' <span style=' ;
 : "<u      S' <u style=' ;
 : "<b      S' <b style=' ;
-
 
 : tag?  ( a u --  f ) 
          /cur @ OVER COMPARE IF -1 EXIT THEN 
@@ -168,7 +202,7 @@ CREATE d_tmp  BL C,
 ;
 
 
-: analize
+: to-forth
 
 
 0 CASE                                       
@@ -179,6 +213,14 @@ CREATE d_tmp  BL C,
   "Aqua    tag?  OF Aqua    %C ! ENDOF 
   "Blue    tag?  OF Blue    %C ! ENDOF 
   "Fuchsia tag?  OF Fuchsia %C ! ENDOF 
+
+  Red-tag?       OF Red     %C ! ENDOF 
+  Yellow-tag?    OF Yellow  %C ! ENDOF 
+  Green-tag?     OF Green   %C ! ENDOF 
+  Aqua-tag?      OF Aqua    %C ! ENDOF 
+  Blue-tag?      OF Blue    %C ! ENDOF 
+  Fuchsia-tag?   OF Fuchsia %C ! ENDOF 
+
 
 S" </font>"  ??  OF Black   %C ! ENDOF
 
@@ -271,13 +313,13 @@ S" </font>"  ??  OF Black   %C ! ENDOF
 
 
 
-: (MAKECODE)   ( a u -- s )
+: (FORTHCODE)   ( a u -- s )
 
 
 OVER /cur ! + /lim !  "" /s !
 
 
-  BEGIN  /cur @ /lim @ < WHILE analize  /cur 1+!  REPEAT
+  BEGIN  /cur @ /lim @ < WHILE to-forth  /cur 1+!  REPEAT
 
 CR  ." {" s. ." }"
 
@@ -287,7 +329,103 @@ CR  ." {" s. ." }"
 ;
 
 
-' (MAKECODE) TO MAKECODE
+' (FORTHCODE) TO FORTHCODE
 
+
+
+
+
+
+
+: to-bbcode
+
+
+0 CASE                                       
+
+  "Red     tag?  OF S" [color=#FF0000]"  s+ ENDOF 
+  "Yellow  tag?  OF S" [color=#FFF000]"  s+ ENDOF 
+  "Green   tag?  OF S" [color=#00FF00]"  s+ ENDOF 
+  "Aqua    tag?  OF S" [color=#00FFFF]"  s+ ENDOF 
+  "Blue    tag?  OF S" [color=#0000FF]"  s+ ENDOF 
+  "Fuchsia tag?  OF S" [color=#FF00FF]"  s+ ENDOF 
+
+  Red-tag?       OF S" [color=#FF0000]"  s+ ENDOF 
+  Yellow-tag?    OF S" [color=#FFF000]"  s+ ENDOF 
+  Green-tag?     OF S" [color=#00FF00]"  s+ ENDOF 
+  Aqua-tag?      OF S" [color=#00FFFF]"  s+ ENDOF 
+  Blue-tag?      OF S" [color=#0000FF]"  s+ ENDOF 
+  Fuchsia-tag?   OF S" [color=#FF00FF]"  s+ ENDOF 
+
+
+
+S" </font>"  ??  OF S" [/color]"  s+  ENDOF
+
+  S" <b>"    ??  OF S" [b]"   s+   ENDOF
+  S" </b>"   ??  OF S" [/b]"  s+   ENDOF
+  "<b      tag?  OF S" [b]"   s+   ENDOF 
+
+  S" <u>"    ??  OF S" [u]"   s+   ENDOF 
+  S" </u>"   ??  OF S" [/u]"  s+   ENDOF 
+  "<u      tag?  OF S" [u]"   s+   ENDOF 
+
+  S" <sub>"  ??  OF S" [sub]"   s+  ENDOF 
+  S" </sub>" ??  OF S" [/sub]"  s+  ENDOF 
+
+
+  S" &lt;"   ??  OF  S" <"      s+  ENDOF
+  S" &gt;"   ??  OF  S" >"      s+  ENDOF
+
+  S" &nbsp;"  ??  OF S"  "   s+   ENDOF
+
+  S" <div>"   ??  OF LT 2 s+ br+  ENDOF
+  S" </div>"  ??  OF S" "   s+   ENDOF
+
+  S" <br>"    ??  OF S"  <br> " s+ LT 2 s+ ENDOF
+
+  S" <span>"  ??  OF S" "   s+   ENDOF
+  S" </span>" ??  OF S" "   s+   ENDOF
+
+  "span     tag?  OF S" "   s+   ENDOF 
+
+
+  /cur @ 1 s+ 
+
+
+ ENDCASE  
+
+
+;
+
+
+
+
+
+
+
+
+
+: (BBCODE)   ( a u -- s )
+
+
+OVER /cur ! + /lim !  "" /s !
+
+
+S" [size=35]" s+
+
+  BEGIN  /cur @ /lim @ < WHILE to-bbcode  /cur 1+!  REPEAT
+
+S" [/size]" s+
+
+
+CR  ." {" s. ." }"
+
+/s @ 
+
+
+;
+
+
+
+' (BBCODE) TO BBCODE
 
 
