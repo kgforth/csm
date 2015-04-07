@@ -1,6 +1,8 @@
 VECT FORTHCODE
+VECT HTMLCODE
 VECT BBCODE
 
+USER html-flag
 
 REQUIRE {            locals.f
 REQUIRE CreateSocket sockets.f
@@ -192,15 +194,19 @@ SWAP WARNING !
 ;
 
 
+
+
 : MAKE-FILE  { a u \ fid a1 u1 }
 
     a u  S" :" SEARCH 0= IF 2DROP EXIT THEN
+
+    a 32 S" .html" SEARCH IF -1 html-flag ! THEN  2DROP
 
     1- TO u1 1+ TO a1 0 a1 1- C!
 
     a a1 a - 1-  W/O CREATE-FILE THROW TO fid 
  
-    a1 u1  fid WRITE-FILE THROW
+    a1 u1  HTMLCODE DUP STR@ fid WRITE-FILE THROW STRFREE
 
     fid CLOSE-FILE THROW
 
