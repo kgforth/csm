@@ -333,10 +333,6 @@ CR  ." {" s. ." }"
 
 
 
-
-
-
-
 : to-bbcode
 
 
@@ -398,12 +394,6 @@ S" </font>"  ??  OF S" [/color]"  s+  ENDOF
 
 
 
-
-
-
-
-
-
 : (BBCODE)   ( a u -- s )
 
 
@@ -423,5 +413,79 @@ CR  ." {" s. ." }"
 
 
 ' (BBCODE) TO BBCODE
+
+
+
+
+: size-tag?  ( --  f ) 
+         S'  style="font-size: ' /cur @ OVER COMPARE IF -1 EXIT THEN 
+         /cur @ 256  S' ;"' SEARCH IF DROP 1+ /cur ! 0  ELSE 2DROP -1 THEN  ; 
+
+
+
+: to-htmlcode
+
+
+0 CASE                                       
+
+
+  size-tag?       OF S" "   s+   ENDOF 
+  S" <span>"  ??  OF S" "   s+   ENDOF
+  S" </span>" ??  OF S" "   s+   ENDOF
+  "span     tag?  OF S" "   s+   ENDOF 
+
+
+  /cur @ 1 s+ 
+
+
+ ENDCASE  
+
+
+;
+
+
+
+
+
+
+
+: (HTMLCODE)   ( a u -- s )
+
+
+OVER /cur ! + /lim !  "" /s !
+
+html-flag @ -1 = 
+
+IF
+
+  S' <!DOCTYPE html><html>' /cur @ OVER COMPARE 
+
+  IF S' <!DOCTYPE html><html><head><meta charset="UTF-8"></head><body>' s+ 1 html-flag ! THEN
+
+THEN
+
+
+  BEGIN  /cur @ /lim @ < WHILE to-htmlcode  /cur 1+!  REPEAT
+
+
+html-flag @ 1 =
+
+IF
+
+ S' </body></html>' s+
+
+THEN
+
+CR  ." {" s. ." }"
+
+
+/s @ 
+
+
+;
+
+
+
+' (HTMLCODE) TO HTMLCODE
 
 
