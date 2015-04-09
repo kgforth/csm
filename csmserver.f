@@ -9,7 +9,71 @@ REQUIRE CreateSocket sockets.f
 REQUIRE STR@         str5.f
 REQUIRE CASE         case.f
 REQUIRE (MAKECODE)   makecode.f
+REQUIRE FIND-FILES   findfile.f
 
+
+
+0
+2 -- wYear
+2 -- wMonth
+2 -- wDayOfWeek
+2 -- wDay
+2 -- wHour
+2 -- wMinute
+2 -- wSecond
+2 -- wMilliseconds
+CONSTANT /SYSTEMTIME
+CREATE SYSTEMTIME /SYSTEMTIME ALLOT
+
+
+WINAPI: FileTimeToSystemTime KERNEL32.DLL
+
+WINAPI: GetLocalTime KERNEL32.DLL
+WINAPI: GetTickCount KERNEL32.DLL
+
+: TIME&DATE ( -- sec min hr day mt year ) \ 94 FACIL
+  SYSTEMTIME GetLocalTime DROP
+  SYSTEMTIME wSecond W@
+  SYSTEMTIME wMinute W@
+  SYSTEMTIME wHour W@
+  SYSTEMTIME wDay W@
+  SYSTEMTIME wMonth W@
+  SYSTEMTIME wYear W@
+;
+
+VARIABLE W-DATEA
+VARIABLE M-DATEA
+
+: W-DATE
+  HERE W-DATEA !
+  7 0 DO BL WORD ", LOOP
+;
+: M-DATE
+  HERE M-DATEA !
+  12 0 DO BL WORD ", LOOP
+;
+W-DATE Sun Mon Tue Wed Thu Fri Sat
+M-DATE Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec
+
+: DateW>S ( w -- addr u )
+  0 MAX 6 MIN
+  W-DATEA @ SWAP 0 ?DO COUNT + LOOP COUNT
+;
+: DateM>S ( m -- addr u )
+  1 MAX 12 MIN
+  1- M-DATEA @ SWAP 0 ?DO COUNT + LOOP COUNT
+;
+
+
+
+: #: ( -- ) [CHAR] : HOLD ;
+: #N ( n -- ) ( S>D) 0 #S 2DROP ;
+: #N## ( n -- ) ( S>D) 0 # # 2DROP ;
+: #SG ( n -- )
+  DUP >R ABS 0 #S 2DROP R> SIGN
+;
+
+: <<# ( -- 0 0 )  PAD 0!  0 0 <# ;
 
 4000  CONSTANT /QUERY_BUFF
 10000 CONSTANT /FILE_BUFF
@@ -194,6 +258,70 @@ SWAP WARNING !
 ;
 
 
+: LS-DIR ( addr u xt -- )
+\ addr u - имя искомого файла или шаблон
+\ xt ( data -- ) - процедура вызываемая для каждого файла
+  { addr u xt \ data id err }
+
+  0 addr u + C!
+  /WIN32_FIND_DATA ALLOCATE THROW -> data
+  data /WIN32_FIND_DATA ERASE
+  data addr FindFirstFileA -> id
+  id -1 = IF data FREE DROP EXIT THEN
+  data xt EXECUTE
+  BEGIN
+    data id FindNextFileA err 0= AND
+  WHILE
+    data xt ['] EXECUTE CATCH -> err
+    err IF 2DROP THEN
+  REPEAT
+  id FindClose DROP
+  data FREE DROP
+  err THROW
+;
+
+
+: HTTP-LS1 { data \ isDir }
+
+   data cFileName ASCIIZ>  S" ."   COMPARE 0= IF EXIT THEN 
+   data cFileName ASCIIZ>  S" .."  COMPARE 0= IF EXIT THEN 
+
+
+   data dwFileAttributes @ FILE_ATTRIBUTE_DIRECTORY AND FILE_ATTRIBUTE_DIRECTORY =
+   -> isDir
+
+   data nFileSizeLow @ 0 <# #S 13 PAD HLD @ - - 0 MAX 0 ?DO BL HOLD LOOP #> "" DUP >R STR+ R> WRITE
+
+   data ftLastWriteTime
+   >R
+   /SYSTEMTIME ALLOCATE THROW DUP /SYSTEMTIME ERASE
+   DUP R> FileTimeToSystemTime DROP >R
+   <<# BL HOLD TIME&DATE NIP NIP NIP NIP NIP R@ wYear W@ =
+       IF R@ wMinute W@ #N## #: R@ wHour W@ #N##
+       ELSE R@ wYear W@ S>D # # # # 2DROP BL HOLD THEN
+       BL HOLD
+       R@ wDay W@ #N## BL HOLD
+       R@ wMonth W@ DateM>S HOLDS BL HOLD
+       R> FREE DROP
+   #> "" DUP >R STR+ R> WRITE
+
+   data cFileName ASCIIZ>
+
+
+   2DUP " <a href={''}#{''} onclick={''}opfile('{s}'); return false; {''}>{s}</a><br>{CRLF}" WRITE
+
+;
+
+: HTTP-LS ( addr u -- )  ['] HTTP-LS1 LS-DIR ;
+
+: LIST-DIR
+
+" <html><body><pre>"  WRITE
+
+ S" ./csm/*"  ['] HTTP-LS CATCH
+
+  ?DUP IF THROW ELSE " </pre></body></html>" WRITE THEN
+;
 
 
 : MAKE-FILE  { a u \ fid a1 u1 }
@@ -235,18 +363,27 @@ SWAP WARNING !
        ['] SEND-FILE CATCH
   THEN
 
+
   file STR@ S" ./save.html" COMPARE 0=  active @  AND  
 
   IF   posted @ STR@  MAKE-FILE  THEN
+
+
 
   file STR@ S" ./forth.html" COMPARE 0=  active @  AND  
 
   IF   posted @ STR@  MAKE-FORTH  THEN
 
+
+
   file STR@ S" ./bbcode.html" COMPARE 0=  active @  AND  
 
   IF   posted @ STR@  MAKE-BBCODE  THEN
 
+
+  file STR@ S" ./dir.html" COMPARE 0=  active @ 0= AND  
+
+  IF   LIST-DIR  THEN
 
 
 file STRFREE
