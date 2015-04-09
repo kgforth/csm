@@ -12,11 +12,13 @@
 
 <script type="text/javascript">
 
-     var backup = ' ';
-     var filein = './csm/empty.csm';
 
 $(document).ready(function(){
 
+     var backforth = ' ';
+     var backbbcode = ' ';
+
+     var filein = './csm/empty.csm';
 
  $('#ex-1').click(function(){
 
@@ -81,6 +83,21 @@ $(document).ready(function(){
     });
 
 
+ $('#dir1').click(function(){
+
+   var dirlen = $("#dir").html();
+
+   if ( dirlen.length > 1 ) {
+
+     $("#dir").text('');
+
+   } else {
+
+      $.get("./dir.html", function (resp) {$('#dir').html(resp)});
+
+   }
+
+    });
 
  $('#open1').click(function(){
 
@@ -100,19 +117,40 @@ $(document).ready(function(){
 
  $('#forth1').click(function(){
 
+   if ( backforth.length > 1 ) {
 
-          backup = $('#editor1').wysiwyg('shell').getHTML();
+          $('#editor1').wysiwyg('shell').setHTML(backforth);
 
-          $.post('forth.html', $('#editor1').wysiwyg('shell').getHTML(), function(data){
+          backforth = ' ';
 
-          $('#editor1').wysiwyg('shell').setHTML(data);
-      });
+     } else {
+
+          backforth = $('#editor1').wysiwyg('shell').getHTML();
+
+          $.post('forth.html', $('#editor1').wysiwyg('shell').getHTML(), function(data){ 
+
+             $('#editor1').wysiwyg('shell').setHTML(data);
+
+           });
+
+         }
+     
+    });
+  
 
 
  $('#bbcode1').click(function(){
 
 
-          backup = $('#editor1').wysiwyg('shell').getHTML();
+   if ( backbbcode.length > 1 ) {
+
+          $('#editor1').wysiwyg('shell').setHTML(backbbcode);
+
+          backbbcode = ' ';
+
+     } else {
+
+          backbbcode = $('#editor1').wysiwyg('shell').getHTML();
 
           $.post('bbcode.html', $('#editor1').wysiwyg('shell').getHTML(), function(data){
 
@@ -120,16 +158,11 @@ $(document).ready(function(){
 
       });
 
+     }
+
    });
 
 
- $('#back1').click(function(){
-
-          $('#editor1').wysiwyg('shell').setHTML(backup);
-
-      });
-
-    });
 
 
 
@@ -189,13 +222,18 @@ $(document).ready(function(){
         return false;
     });
 
-//    var wysiwygeditor = wysiwyg( option );
-    //wysiwygeditor.setHTML( '<html>' );
 });
 
 
+function opfile(name) {
 
+    $('#input1').text(name);
 
+    $("#dir").text('');
+
+    $.get("./csm/" + name, function (resp) {$('#editor1').wysiwyg('shell').setHTML(resp)});
+
+}
 
 
 </script>
@@ -242,18 +280,18 @@ p {
 
 
 <div style="width:860px; margin: 5px auto; font-family: Arial,Verdana; font-size: 1.1em;"> 
-<div id="input1" style="width:130px; display:inline-block; margin: 10px auto; font-family: Arial,Verdana; font-size: 1.1em;" contenteditable>empty.csm</div> 
+<div id="input1" style="width:130px; display:inline-block; margin: 10px auto; font-family: Arial,Verdana; font-size: 1.1em;" contenteditable>empty.csm</div>
 <div style="width:700px; display:inline-block; margin: 5px auto; font-family: Arial,Verdana; font-size: 1.1em;">
-&nbsp; <a contenteditable="false" id="open1" class="button" href="#" unselectable="on">open</a>
-&nbsp; <a contenteditable="false" id="save1" class="button" href="#" unselectable="on">save</a>
-&nbsp; <a contenteditable="false" id="forth1" class="button" href="#" unselectable="on">forth</a>
-&nbsp; <a contenteditable="false" id="bbcode1" class="button" href="#" unselectable="on">bbcode</a>
-&nbsp; <a contenteditable="false" id="back1" class="button" href="#" unselectable="on">back</a>
-&nbsp;&nbsp; &nbsp;&nbsp; 
+<a contenteditable="false" id="dir1" class="button" href="#" unselectable="on">{+}</a>
+&nbsp;<a contenteditable="false" id="open1" class="button" href="#" unselectable="on">open</a>
+&nbsp;<a contenteditable="false" id="save1" class="button" href="#" unselectable="on">save</a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a contenteditable="false" id="forth1" class="button" href="#" unselectable="on">forth</a>
+&nbsp;<a contenteditable="false" id="bbcode1" class="button" href="#" unselectable="on">bbcode</a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 цв<font color="#0000ff">е</font>тн<font color="#ff0000">ы</font><font color="#0000ff">е</font>&nbsp;&nbsp;&nbsp;&nbsp;ст<font color="#0000ff">е</font>к<font color="#00ffff">о</font>в<font color="#ff0000">ы</font><font color="#0000ff">е</font>&nbsp;&nbsp;&nbsp;&nbsp;м<font color="#00ff00">а</font>н<font color="#ff00ff">и</font>п<font color="#0000ff">у</font>л<font color="#00ff00">я</font>т<font color="#00ffff">о</font>р<font color="#ff0000">ы</font>
+</div></div>
 
-</div>
-</div>
+<div id="dir"></div>
 
 <div style="width:860px; margin: 5px auto; font-family: Arial,Verdana; font-size: 0.718em;">
          <a id="editor1-BEGIN-AGAIN" class="button" href="#" unselectable="on">&#x24B7;&#x24B6;=BEGIN-AGAIN</a>
